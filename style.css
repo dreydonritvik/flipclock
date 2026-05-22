@@ -1,0 +1,482 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: radial-gradient(circle at center, #23252b 0%, #0d0e12 100%);
+    font-family: 'Oswald', sans-serif;
+    color: #fff;
+    overflow: hidden;
+    cursor: default;
+}
+
+body.hide-cursor {
+    cursor: none;
+}
+
+.clock-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 60px 80px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 30px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+.clock-group {
+    display: flex;
+    gap: 10px;
+}
+
+.colon {
+    font-size: 110px;
+    font-weight: 700;
+    color: #666;
+    margin: 0 -5px;
+    line-height: 1;
+    transform: translateY(-15px);
+    transition: opacity 0.1s, text-shadow 0.1s, margin 0.3s, font-size 0.3s;
+}
+
+#seconds-colon {
+    font-size: 70px;
+    /* matched proportional size to seconds small cards */
+    margin: 0px 0px 10px 0px;
+    /* adjust left spacing */
+    transform: translateY(35px);
+    /* aligned to center line of small cards */
+}
+
+.colon.hidden {
+    display: none !important;
+}
+
+/* JavaScript controlled blinking states */
+.colon.blink-on {
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.colon.blink-off {
+    opacity: 0.1;
+    text-shadow: none;
+}
+
+/* Base large flip-card */
+.flip-card {
+    position: relative;
+    width: 140px;
+    height: 200px;
+    background-color: #1a1b20;
+    border-radius: 16px;
+    font-size: 150px;
+    font-weight: 700;
+    perspective: 1000px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    display: flex;
+    /* Eklendi */
+    justify-content: center;
+    /* Eklendi */
+}
+
+.base-top,
+.base-bottom,
+.flap-top,
+.flap-bottom {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+    /* Dışarı taşan sayı kısmını gizler */
+    color: #ececec;
+    display: flex;
+    justify-content: center;
+    line-height: 1;
+    /* Standart değer */
+    backface-visibility: hidden;
+}
+
+/* Üst Parçalar */
+.base-top,
+.flap-top {
+    top: 0;
+    align-items: flex-end;
+    /* Sayıyı aşağı (çizgiye) yaslar */
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    background: linear-gradient(to bottom, #2c2f38 0%, #1e2027 100%);
+    transform-origin: bottom;
+}
+
+.base-bottom,
+.flap-bottom {
+    bottom: 0;
+    align-items: flex-start;
+    /* Sayıyı yukarı (çizgiye) yaslar */
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    background: linear-gradient(to bottom, #191b22 0%, #121318 100%);
+    transform-origin: top;
+}
+
+.base-top span,
+.flap-top span {
+    transform: translateY(50%);
+    /* Sayıyı tam merkeze çeker */
+}
+
+.base-bottom span,
+.flap-bottom span {
+    transform: translateY(-50%);
+    /* Sayıyı tam merkeze çeker */
+}
+
+/* Smaller flip-card for seconds */
+.flip-card.small {
+    width: 80px;
+    height: 120px;
+    font-size: 80px;
+    line-height: 110px;
+    /* Pulls small number up */
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.flip-card.small .base-top,
+.flip-card.small .flap-top {
+    line-height: 110px;
+    /* Pulls top half of small number up */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.flip-card.small .base-bottom,
+.flip-card.small .flap-bottom {
+    line-height: 0px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Middle line */
+.flip-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -2%;
+    width: 104%;
+    height: 4px;
+    background-color: #0b0c10;
+    z-index: 5;
+    transform: translateY(-50%);
+    border-radius: 2px;
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.flip-card.small::after {
+    height: 3px;
+}
+
+.flap-top {
+    z-index: 2;
+    animation: flipTop 0.4s ease-in forwards;
+}
+
+.flap-bottom {
+    z-index: 2;
+    transform: rotateX(90deg);
+    animation: flipBottom 0.4s ease-out 0.4s forwards;
+}
+
+@keyframes flipTop {
+    0% {
+        transform: rotateX(0deg);
+    }
+
+    100% {
+        transform: rotateX(-90deg);
+    }
+}
+
+@keyframes flipBottom {
+    0% {
+        transform: rotateX(90deg);
+    }
+
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+/* Shadow effects */
+.flap-top::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+    opacity: 0;
+    animation: fadeShadowTop 0.4s ease-in forwards;
+}
+
+@keyframes fadeShadowTop {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.flap-bottom::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+    opacity: 1;
+    animation: fadeShadowBottom 0.4s ease-out 0.4s forwards;
+}
+
+@keyframes fadeShadowBottom {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Seconds and AM/PM Layout */
+.seconds-and-ampm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    height: 200px;
+    /* matched to main flip cards */
+    min-width: 0;
+    gap: 12px;
+}
+
+.ampm {
+    font-size: 28px;
+    font-weight: 700;
+    color: #999;
+    align-self: flex-start;
+    /* left-align */
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    margin-left: 5px;
+    /* subtle spacing relative to cards edge */
+    margin-bottom: 30px;
+    /* pushes it further up away from seconds */
+}
+
+.ampm.hidden {
+    display: none;
+}
+
+#seconds-group {
+    transition: opacity 0.3s;
+}
+
+#seconds-group.hidden {
+    display: none;
+}
+
+/* UI Toolbar */
+.toolbar {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    display: flex;
+    gap: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    z-index: 100;
+}
+
+.toolbar.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn {
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.settings-container {
+    position: relative;
+}
+
+.settings-menu {
+    position: absolute;
+    bottom: calc(100% + 15px);
+    right: 0;
+    transform: translateY(10px);
+    background: rgba(18, 19, 24, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    min-width: 140px;
+}
+
+.settings-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-group:not(:last-child) {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-title {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #bbb;
+    transition: color 0.2s;
+}
+
+.radio-label:hover {
+    color: #fff;
+}
+
+.radio-label input[type="radio"] {
+    accent-color: #fff;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Responsive Scaling */
+@media (max-width: 1100px) {
+    .clock-container {
+        transform: scale(0.85);
+        transform-origin: center center;
+    }
+}
+
+@media (max-width: 900px) {
+    .clock-container {
+        transform: scale(0.7);
+        transform-origin: center center;
+    }
+}
+
+@media (max-width: 800px) {
+    .clock-container {
+        transform: scale(0.8);
+        transform-origin: center center;
+        flex-direction: column;
+        gap: 30px;
+        padding: 50px;
+    }
+
+    .colon {
+        display: none !important;
+    }
+
+    .seconds-and-ampm {
+        align-items: center;
+        justify-content: center;
+        height: auto;
+    }
+
+    .ampm {
+        margin: 0 0 15px 0;
+        align-self: center;
+    }
+
+    .toolbar {
+        bottom: 25px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .settings-menu {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+    }
+
+    .settings-menu.show {
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@media (max-width: 400px) {
+    .clock-container {
+        transform: scale(0.6);
+        transform-origin: center center;
+    }
+}

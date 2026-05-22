@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Clock</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="clock-container">
+        <!-- Hours -->
+        <div class="clock-group" id="hours-group">
+            <div class="flip-card" id="hour-10" data-digit="0">
+                <div class="base-top"><span>0</span></div>
+                <div class="base-bottom"><span>0</span></div>
+            </div>
+            <div class="flip-card" id="hour-1" data-digit="0">
+                <div class="base-top"><span>0</span></div>
+                <div class="base-bottom"><span>0</span></div>
+            </div>
+        </div>
+
+        <div class="colon">:</div>
+
+        <!-- Minutes -->
+        <div class="clock-group" id="minutes-group">
+            <div class="flip-card" id="minute-10" data-digit="0">
+                <div class="base-top"><span>0</span></div>
+                <div class="base-bottom"><span>0</span></div>
+            </div>
+            <div class="flip-card" id="minute-1" data-digit="0">
+                <div class="base-top"><span>0</span></div>
+                <div class="base-bottom"><span>0</span></div>
+            </div>
+        </div>
+
+        <div class="colon" id="seconds-colon">:</div>
+
+        <!-- Seconds and AM/PM Module -->
+        <div class="seconds-and-ampm" id="seconds-and-ampm">
+            <!-- AM/PM Indicator -->
+            <div class="ampm hidden" id="ampm-indicator">AM</div>
+
+            <!-- Seconds -->
+            <div class="clock-group seconds" id="seconds-group">
+                <div class="flip-card small" id="second-10" data-digit="0">
+                    <div class="base-top"><span>0</span></div>
+                    <div class="base-bottom"><span>0</span></div>
+                </div>
+                <div class="flip-card small" id="second-1" data-digit="0">
+                    <div class="base-top"><span>0</span></div>
+                    <div class="base-bottom"><span>0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toolbar (Settings + Fullscreen) -->
+    <div class="toolbar" id="toolbar">
+        <div class="settings-container">
+            <button id="settings-btn" class="btn" aria-label="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                </svg>
+            </button>
+            <div id="settings-menu" class="settings-menu">
+                <div class="settings-group">
+                    <div class="settings-title">Time Format</div>
+                    <label class="radio-label">
+                        <input type="radio" name="time-format" value="12" id="format-12">
+                        12-Hour
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="time-format" value="24" id="format-24" checked>
+                        24-Hour
+                    </label>
+                </div>
+                <div class="settings-group">
+                    <div class="settings-title">Show Seconds</div>
+                    <label class="radio-label">
+                        <input type="radio" name="show-sec" value="yes" id="sec-yes" checked>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="show-sec" value="no" id="sec-no">
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
+        <button id="fullscreen-btn" class="btn" aria-label="Fullscreen">
+            <svg id="icon-fullscreen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                </path>
+            </svg>
+            <svg id="icon-exit-fullscreen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="display: none;">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3">
+                </path>
+            </svg>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
